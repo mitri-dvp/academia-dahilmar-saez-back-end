@@ -1,6 +1,4 @@
-const {
-  transformResponse,
-} = require("@strapi/strapi/lib/core-api/controller/transform");
+import { transformResponse } from "@strapi/strapi/lib/core-api/controller/transform";
 
 type SingupBody = {
   data: {
@@ -38,42 +36,60 @@ module.exports = {
 
     const roleID = role.id;
 
-    const userAdd = await strapi.service("plugin::users-permissions.user").add({
-      username: data.email,
-      email: data.email,
-      password: data.password,
-      confirmed: true,
-      role: roleID,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      documentID: data.documentID,
-      dateOfBirth: data.dateOfBirth,
-      provider: "local",
-    });
+    const user = await strapi.entityService.create(
+      "plugin::users-permissions.user",
+      {
+        data: {
+          username: data.email,
+          email: data.email,
+          password: data.password,
+          confirmed: true,
+          role: roleID,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          documentID: data.documentID,
+          dateOfBirth: data.dateOfBirth,
+          provider: "local",
+        },
+        populate: {
+          role: true,
+          photo: true,
+        },
+      }
+    );
 
     const jwt = await strapi
       .service("plugin::users-permissions.jwt")
-      .issue({ id: userAdd.id });
+      .issue({ id: user.id });
 
     return ctx.send({
       token: jwt,
       user: {
-        id: userAdd.id,
-        username: userAdd.username,
-        email: userAdd.email,
-        firstName: userAdd.firstName,
-        lastName: userAdd.lastName,
-        documentID: userAdd.documentID,
-        dateOfBirth: userAdd.dateOfBirth,
-        provider: userAdd.provider,
-        createdAt: userAdd.createdAt,
-        updatedAt: userAdd.updatedAt,
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        documentID: user.documentID,
+        dateOfBirth: user.dateOfBirth,
+        provider: user.provider,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
         role: {
-          id: userAdd.role.id,
-          type: userAdd.role.type,
-          createdAt: userAdd.role.createdAt,
-          updatedAt: userAdd.role.updatedAt,
+          id: user.role.id,
+          type: user.role.type,
+          createdAt: user.role.createdAt,
+          updatedAt: user.role.updatedAt,
         },
+        photo: user.photo
+          ? {
+              id: user.photo.id,
+              name: user.photo.name,
+              url: user.photo.url,
+              createdAt: user.photo.createdAt,
+              updatedAt: user.photo.updatedAt,
+            }
+          : null,
       },
     });
   },
@@ -87,6 +103,7 @@ module.exports = {
       },
       populate: {
         role: true,
+        photo: true,
       },
     });
 
@@ -129,6 +146,15 @@ module.exports = {
           createdAt: user.role.createdAt,
           updatedAt: user.role.updatedAt,
         },
+        photo: user.photo
+          ? {
+              id: user.photo.id,
+              name: user.photo.name,
+              url: user.photo.url,
+              createdAt: user.photo.createdAt,
+              updatedAt: user.photo.updatedAt,
+            }
+          : null,
       },
     });
   },
