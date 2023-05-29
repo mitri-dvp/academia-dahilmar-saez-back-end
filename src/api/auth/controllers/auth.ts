@@ -54,6 +54,7 @@ module.exports = {
         populate: {
           role: true,
           photo: true,
+          attendances: true,
         },
       }
     );
@@ -91,6 +92,7 @@ module.exports = {
             }
           : null,
       },
+      attendances: user.attendances,
     });
   },
   async login(ctx) {
@@ -104,6 +106,7 @@ module.exports = {
       populate: {
         role: true,
         photo: true,
+        attendances: true,
       },
     });
 
@@ -156,6 +159,7 @@ module.exports = {
             }
           : null,
       },
+      attendances: user.attendances,
     });
   },
 };
