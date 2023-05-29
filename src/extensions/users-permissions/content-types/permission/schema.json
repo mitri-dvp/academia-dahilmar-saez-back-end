@@ -3,7 +3,6 @@
   "collectionName": "up_permissions",
   "info": {
     "name": "permission",
-    "description": "",
     "singularName": "permission",
     "pluralName": "permissions",
     "displayName": "Permission"

@@ -4,8 +4,7 @@
   "info": {
     "singularName": "attendance",
     "pluralName": "attendances",
-    "displayName": "Attendance",
-    "description": ""
+    "displayName": "Attendance"
   },
   "options": {
     "draftAndPublish": false

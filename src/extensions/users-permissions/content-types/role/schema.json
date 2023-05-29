@@ -3,7 +3,6 @@
   "collectionName": "up_roles",
   "info": {
     "name": "role",
-    "description": "",
     "singularName": "role",
     "pluralName": "roles",
     "displayName": "Role"
