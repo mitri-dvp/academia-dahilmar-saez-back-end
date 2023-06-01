@@ -1,7 +1,9 @@
-/**
- * group router
- */
-
-import { factories } from '@strapi/strapi';
-
-export default factories.createCoreRouter('api::group.group');
+module.exports = {
+  routes: [
+    {
+      method: "GET",
+      path: "/groups",
+      handler: "group.get",
+    },
+  ],
+};

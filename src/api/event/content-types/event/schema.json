@@ -15,7 +15,7 @@
       "type": "string"
     },
     "description": {
-      "type": "richtext"
+      "type": "text"
     },
     "date": {
       "type": "date"

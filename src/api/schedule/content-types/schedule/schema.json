@@ -4,7 +4,8 @@
   "info": {
     "singularName": "schedule",
     "pluralName": "schedules",
-    "displayName": "Schedule"
+    "displayName": "Schedule",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -13,6 +14,12 @@
   "attributes": {
     "datetime": {
       "type": "datetime"
+    },
+    "group": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::group.group",
+      "inversedBy": "schedules"
     }
   }
 }

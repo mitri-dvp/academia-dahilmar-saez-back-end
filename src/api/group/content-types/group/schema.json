@@ -15,12 +15,24 @@
       "type": "string"
     },
     "description": {
-      "type": "richtext"
+      "type": "text"
     },
     "users": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "plugin::users-permissions.user",
+      "inversedBy": "groups"
+    },
+    "schedules": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::schedule.schedule",
+      "mappedBy": "group"
+    },
+    "class": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::class.class",
       "inversedBy": "groups"
     }
   }

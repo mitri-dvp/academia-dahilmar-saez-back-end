@@ -1,7 +1,9 @@
-/**
- * schedule router
- */
-
-import { factories } from '@strapi/strapi';
-
-export default factories.createCoreRouter('api::schedule.schedule');
+module.exports = {
+  routes: [
+    {
+      method: "GET",
+      path: "/schedules",
+      handler: "schedule.get",
+    },
+  ],
+};
