@@ -1,4 +1,5 @@
 import { Strapi } from "@strapi/strapi";
+import { Server } from "socket.io";
 
 export default {
   /**
@@ -7,7 +8,7 @@ export default {
    *
    * This gives you an opportunity to extend code.
    */
-  register({ strapi }: { strapi: Strapi }) {
+  async register({ strapi }: { strapi: Strapi }) {
     // ...
   },
 
@@ -18,5 +19,12 @@ export default {
    * This gives you an opportunity to set up your data model,
    * run jobs, or perform some special logic.
    */
-  bootstrap(/*{ strapi }*/) {},
+  async bootstrap({ strapi }: { strapi: Strapi }) {
+    strapi.io = new Server(strapi.server.httpServer, {
+      cors: {
+        origin: process.env.HOST || "http://localhost:5000",
+        methods: ["GET", "POST"],
+      },
+    });
+  },
 };

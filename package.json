@@ -10,12 +10,13 @@
     "strapi": "strapi"
   },
   "dependencies": {
-    "@strapi/plugin-i18n": "4.6.1",
-    "@strapi/plugin-users-permissions": "4.6.1",
-    "@strapi/provider-email-nodemailer": "4.6.1",
-    "@strapi/provider-upload-cloudinary": "4.6.1",
-    "@strapi/strapi": "4.6.1",
-    "pg": "^8.9.0"
+    "@strapi/plugin-i18n": "4.10.7",
+    "@strapi/plugin-users-permissions": "4.10.7",
+    "@strapi/provider-email-nodemailer": "4.10.7",
+    "@strapi/provider-upload-cloudinary": "4.10.7",
+    "@strapi/strapi": "4.10.7",
+    "pg": "^8.9.0",
+    "socket.io": "^4.6.2"
   },
   "author": {
     "name": "Jorge Mitri <mitri.dvp@gmail.com>"
