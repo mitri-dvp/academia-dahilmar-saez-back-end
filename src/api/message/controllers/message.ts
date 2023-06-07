@@ -1,7 +1,27 @@
-/**
- * message controller
- */
+import { transformResponse } from "@strapi/strapi/lib/core-api/controller/transform";
 
-import { factories } from '@strapi/strapi'
+module.exports = {
+  async get(ctx) {
+    const { email } = ctx.state.user;
 
-export default factories.createCoreController('api::message.message');
+    const user = await strapi.query("plugin::users-permissions.user").findOne({
+      where: {
+        email: email,
+      },
+      populate: {
+        messages: {
+          populate: {},
+        },
+      },
+      select: ["id"],
+    });
+
+    if (!user) {
+      return ctx.badRequest("Usuario no encontrado");
+    }
+
+    return ctx.send({
+      chats: user.chats,
+    });
+  },
+};

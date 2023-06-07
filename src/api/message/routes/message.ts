@@ -1,7 +1,9 @@
-/**
- * message router
- */
-
-import { factories } from '@strapi/strapi';
-
-export default factories.createCoreRouter('api::message.message');
+module.exports = {
+  routes: [
+    {
+      method: "GET",
+      path: "/messages",
+      handler: "message.get",
+    },
+  ],
+};

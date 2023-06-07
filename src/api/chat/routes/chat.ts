@@ -1,7 +1,26 @@
-/**
- * chat router
- */
+module.exports = {
+  routes: [
+    {
+      method: "GET",
+      path: "/chats",
+      handler: "chat.get",
+    },
+    {
+      method: "POST",
+      path: "/chats",
+      handler: "chat.create",
+    },
+    // {
+    //   method: "GET",
+    //   path: "/chats/:id/messages",
+    //   handler: "chat.getMessages",
+    // },
+    // {
+    //   method: "POST",
+    //   path: "/chats/:id/messages",
+    //   handler: "chat.sendMessage",
+    // },
+  ],
+};
 
-import { factories } from '@strapi/strapi';
-
-export default factories.createCoreRouter('api::chat.chat');
+// ctx.params.id
