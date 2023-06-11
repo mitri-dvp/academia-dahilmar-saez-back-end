@@ -71,7 +71,27 @@ module.exports = {
       data: { contact },
     } = ctx.request.body as CreateBody;
 
-    // TO-DO Validate if chat already exists (Chat(user.id,contact.id).exists())
+    const validateChat = await strapi.query("api::chat.chat").findOne({
+      where: {
+        $and: [
+          {
+            users: {
+              id: user.id,
+            },
+          },
+          {
+            users: {
+              id: contact.id,
+            },
+          },
+        ],
+      },
+      select: ["id"],
+    });
+
+    if (validateChat) {
+      return ctx.badRequest("Chat ya existe encontrado");
+    }
 
     const chat = await strapi.query("api::chat.chat").create({
       data: {
