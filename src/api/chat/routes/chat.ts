@@ -10,17 +10,15 @@ module.exports = {
       path: "/chats",
       handler: "chat.create",
     },
-    // {
-    //   method: "GET",
-    //   path: "/chats/:id/messages",
-    //   handler: "chat.getMessages",
-    // },
-    // {
-    //   method: "POST",
-    //   path: "/chats/:id/messages",
-    //   handler: "chat.sendMessage",
-    // },
+    {
+      method: "GET",
+      path: "/chats/:chatID/messages",
+      handler: "chat.getMessages",
+    },
+    {
+      method: "POST",
+      path: "/chats/:chatID/messages",
+      handler: "chat.sendMessage",
+    },
   ],
 };
-
-// ctx.params.id

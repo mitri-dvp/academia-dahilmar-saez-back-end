@@ -6,6 +6,12 @@ type CreateBody = {
   };
 };
 
+type SendMessageBody = {
+  data: {
+    text: string;
+  };
+};
+
 module.exports = {
   async get(ctx) {
     const { email } = ctx.state.user;
@@ -96,5 +102,83 @@ module.exports = {
     });
 
     return { chat: chat };
+  },
+
+  async getMessages(ctx) {
+    const { chatID } = ctx.params;
+    const { user } = ctx.state;
+
+    const chat = await strapi.query("api::chat.chat").findOne({
+      where: {
+        id: chatID,
+        users: user.id,
+      },
+      populate: {
+        messages: {
+          populate: {
+            user: {
+              select: ["id"],
+            },
+          },
+        },
+      },
+      select: ["id"],
+    });
+
+    if (!chat) {
+      return ctx.badRequest("Chat no encontrado");
+    }
+
+    return { messages: chat.messages };
+  },
+
+  async sendMessage(ctx) {
+    const { chatID } = ctx.params;
+    const { user } = ctx.state;
+    const {
+      data: { text },
+    } = ctx.request.body as SendMessageBody;
+
+    const chat = await strapi.query("api::chat.chat").findOne({
+      where: {
+        id: chatID,
+        users: user.id,
+      },
+      select: ["id"],
+    });
+
+    if (!chat) {
+      return ctx.badRequest("Chat no encontrado");
+    }
+
+    const message = await strapi.query("api::message.message").create({
+      data: {
+        message: text,
+        chat: chat.id,
+        user: user.id,
+      },
+    });
+
+    const updatedChat = await strapi.query("api::chat.chat").findOne({
+      where: {
+        id: chatID,
+        users: user.id,
+      },
+      populate: {
+        messages: {
+          populate: {
+            user: {
+              select: ["id"],
+            },
+          },
+        },
+      },
+      select: ["id"],
+    });
+
+    // Socket Emit
+    strapi.io.emit(`CHAT::${chat.id}::MESSAGES`, updatedChat.messages);
+
+    return `SOCKET::EMIT::CHAT::${chat.id}::MESSAGES::OK`;
   },
 };

@@ -22,7 +22,7 @@ export default {
   async bootstrap({ strapi }: { strapi: Strapi }) {
     strapi.io = new Server(strapi.server.httpServer, {
       cors: {
-        origin: process.env.HOST || "http://localhost:5000",
+        origin: process.env.FRONT_END_HOST || "http://localhost:3000",
         methods: ["GET", "POST"],
       },
     });
