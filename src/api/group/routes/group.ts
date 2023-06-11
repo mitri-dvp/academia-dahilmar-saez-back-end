@@ -5,5 +5,10 @@ module.exports = {
       path: "/groups",
       handler: "group.get",
     },
+    {
+      method: "POST",
+      path: "/groups",
+      handler: "group.create",
+    },
   ],
 };

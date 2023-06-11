@@ -1,4 +1,5 @@
 import { transformResponse } from "@strapi/strapi/lib/core-api/controller/transform";
+import { USER_ROLES } from "../../../utils/global";
 
 type EditBody = {
   data: {
@@ -152,5 +153,54 @@ module.exports = {
     return ctx.send({
       photo: null,
     });
+  },
+  async getAthletes(ctx) {
+    const user = ctx.state.user;
+
+    const verifyUser = await strapi
+      .query("plugin::users-permissions.user")
+      .findOne({
+        where: {
+          email: user.email,
+        },
+      });
+
+    if (!verifyUser) {
+      return ctx.badRequest("Usuario no encontrado");
+    }
+
+    if (user.role.type !== USER_ROLES.TRAINER) {
+      return ctx.badRequest("Rol de usuario no autorizado");
+    }
+
+    const athletes = await strapi
+      .query("plugin::users-permissions.user")
+      .findMany({
+        where: {
+          role: {
+            type: USER_ROLES.ATHLETE,
+          },
+        },
+        select: [
+          "id",
+          "firstName",
+          "lastName",
+          "documentID",
+          "dateOfBirth",
+          "username",
+          "email",
+          "provider",
+          "createdAt",
+          "updatedAt",
+        ],
+        populate: {
+          role: true,
+          photo: {
+            select: ["id", "name", "url", "createdAt", "updatedAt"],
+          },
+        },
+      });
+
+    return ctx.send({ athletes: athletes });
   },
 };

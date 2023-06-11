@@ -64,14 +64,13 @@ module.exports = {
       chats: user.chats,
     });
   },
-
   async create(ctx) {
     const user = ctx.state.user;
     const {
       data: { contact },
     } = ctx.request.body as CreateBody;
 
-    const validateChat = await strapi.query("api::chat.chat").findOne({
+    const verifyChat = await strapi.query("api::chat.chat").findOne({
       where: {
         $and: [
           {
@@ -89,7 +88,7 @@ module.exports = {
       select: ["id"],
     });
 
-    if (validateChat) {
+    if (verifyChat) {
       return ctx.badRequest("Chat ya existe encontrado");
     }
 
@@ -123,7 +122,6 @@ module.exports = {
 
     return { chat: chat };
   },
-
   async getMessages(ctx) {
     const { chatID } = ctx.params;
     const { user } = ctx.state;
@@ -151,7 +149,6 @@ module.exports = {
 
     return { messages: chat.messages };
   },
-
   async sendMessage(ctx) {
     const { chatID } = ctx.params;
     const { user } = ctx.state;

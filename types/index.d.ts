@@ -52,7 +52,7 @@ type Message = {
   updatedAt: string;
 };
 
-type UserMessage = {
+type UserID = {
   id: number;
 };
 

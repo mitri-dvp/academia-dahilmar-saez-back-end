@@ -15,5 +15,10 @@ module.exports = {
       path: "/users/photo/upload",
       handler: "user.photoDelete",
     },
+    {
+      method: "GET",
+      path: "/users/athletes",
+      handler: "user.getAthletes",
+    },
   ],
 };
