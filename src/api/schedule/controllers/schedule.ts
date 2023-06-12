@@ -1,32 +1,42 @@
-import { transformResponse } from "@strapi/strapi/lib/core-api/controller/transform";
+import { USER_ROLES } from "../../../utils/global";
+
+type CreateBody = {
+  data: {
+    scheduleData: {
+      datetime: Date;
+      groupID: number;
+    };
+  };
+};
 
 module.exports = {
-  async get(ctx) {
-    return "WIP";
-    const { email } = ctx.state.user;
+  async create(ctx) {
+    const user = ctx.state.user;
 
-    const user = await strapi.query("plugin::users-permissions.user").findOne({
-      where: {
-        email: email,
-      },
-      populate: {
-        groups: {
-          populate: {
-            class: true,
-            schedules: true,
-            users: true,
-          },
-        },
-      },
-      select: ["id"],
-    });
+    const {
+      data: { scheduleData },
+    } = ctx.request.body as CreateBody;
 
-    if (!user) {
-      return ctx.badRequest("Usuario no encontrado");
+    if (user.role.type !== USER_ROLES.TRAINER) {
+      return ctx.badRequest("Rol de usuario no autorizado");
     }
 
-    return ctx.send({
-      groups: user.groups,
+    await strapi.query("api::schedule.schedule").create({
+      data: {
+        datetime: scheduleData.datetime,
+        group: scheduleData.groupID,
+      },
     });
+
+    const group = await strapi.query("api::group.group").findOne({
+      where: {
+        id: scheduleData.groupID,
+      },
+      populate: {
+        schedules: true,
+      },
+    });
+
+    return { schedules: group.schedules };
   },
 };

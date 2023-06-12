@@ -1,9 +1,9 @@
 module.exports = {
   routes: [
     {
-      method: "GET",
+      method: "POST",
       path: "/schedules",
-      handler: "schedule.get",
+      handler: "schedule.create",
     },
   ],
 };
