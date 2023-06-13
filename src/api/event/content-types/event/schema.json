@@ -17,8 +17,8 @@
     "description": {
       "type": "text"
     },
-    "date": {
-      "type": "date"
+    "datetime": {
+      "type": "datetime"
     }
   }
 }

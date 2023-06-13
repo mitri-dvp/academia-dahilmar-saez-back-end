@@ -4,7 +4,8 @@
   "info": {
     "singularName": "group",
     "pluralName": "groups",
-    "displayName": "Group"
+    "displayName": "Group",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -34,6 +35,12 @@
       "relation": "manyToOne",
       "target": "api::class.class",
       "inversedBy": "groups"
+    },
+    "attendances": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::attendance.attendance",
+      "mappedBy": "group"
     }
   }
 }

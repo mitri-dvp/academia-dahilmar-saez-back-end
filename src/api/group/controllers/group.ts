@@ -1,5 +1,13 @@
 import { transformResponse } from "@strapi/strapi/lib/core-api/controller/transform";
 import { USER_ROLES } from "../../../utils/global";
+import dayjs from "dayjs";
+
+type DraftAttendance = {
+  id: number | null;
+  status: boolean;
+  remarks: string;
+  userID: number;
+};
 
 type CreateBody = {
   data: {
@@ -8,6 +16,12 @@ type CreateBody = {
       description: string;
       users: number[];
     };
+  };
+};
+
+type PostAttendancesBody = {
+  data: {
+    draftAttendances: DraftAttendance[];
   };
 };
 
@@ -123,5 +137,115 @@ module.exports = {
     });
 
     return { group: group };
+  },
+  async getAttendances(ctx) {
+    const user = ctx.state.user;
+    const { groupID, date } = ctx.params;
+
+    if (user.role.type !== USER_ROLES.TRAINER) {
+      return ctx.badRequest("Rol de usuario no autorizado");
+    }
+
+    const group = await strapi.query("api::group.group").findOne({
+      where: {
+        id: groupID,
+        attendances: {
+          $and: [
+            { datetime: { $lt: dayjs(date).endOf("day").toDate() } },
+            { datetime: { $gt: dayjs(date).startOf("day").toDate() } },
+          ],
+        },
+      },
+      populate: {
+        attendances: {
+          populate: {
+            user: {
+              select: ["id"],
+            },
+          },
+        },
+      },
+      select: ["id"],
+    });
+
+    if (group) {
+      return ctx.send({
+        attendances: group.attendances,
+      });
+    }
+
+    return ctx.send({
+      attendances: [],
+    });
+  },
+  async postAttendances(ctx) {
+    const user = ctx.state.user;
+    const { groupID, date } = ctx.params;
+    const {
+      data: { draftAttendances },
+    } = ctx.request.body as PostAttendancesBody;
+
+    if (user.role.type !== USER_ROLES.TRAINER) {
+      return ctx.badRequest("Rol de usuario no autorizado");
+    }
+
+    for (let i = 0; i < draftAttendances.length; i++) {
+      const attendance = draftAttendances[i];
+
+      if (attendance.id) {
+        // Update Attendance
+        await strapi.query("api::attendance.attendance").update({
+          where: { id: attendance.id },
+          data: {
+            status: attendance.status,
+            remarks: attendance.remarks,
+          },
+        });
+      }
+      if (!attendance.id) {
+        // Update Attendance
+        await strapi.query("api::attendance.attendance").create({
+          data: {
+            status: attendance.status,
+            remarks: attendance.remarks,
+            datetime: dayjs(date).toDate(),
+            group: groupID,
+            user: attendance.userID,
+          },
+        });
+      }
+    }
+
+    const group = await strapi.query("api::group.group").findOne({
+      where: {
+        id: groupID,
+        attendances: {
+          $and: [
+            { datetime: { $lt: dayjs(date).endOf("day").toDate() } },
+            { datetime: { $gt: dayjs(date).startOf("day").toDate() } },
+          ],
+        },
+      },
+      populate: {
+        attendances: {
+          populate: {
+            user: {
+              select: ["id"],
+            },
+          },
+        },
+      },
+      select: ["id"],
+    });
+
+    if (group) {
+      return ctx.send({
+        attendances: group.attendances,
+      });
+    }
+
+    return ctx.send({
+      attendances: [],
+    });
   },
 };

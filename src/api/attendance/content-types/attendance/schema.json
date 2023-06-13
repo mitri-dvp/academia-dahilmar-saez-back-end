@@ -12,8 +12,8 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "date": {
-      "type": "date"
+    "datetime": {
+      "type": "datetime"
     },
     "status": {
       "type": "boolean"
@@ -25,6 +25,12 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
+      "inversedBy": "attendances"
+    },
+    "group": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::group.group",
       "inversedBy": "attendances"
     }
   }
