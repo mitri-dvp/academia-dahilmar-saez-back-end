@@ -138,6 +138,51 @@ module.exports = {
 
     return { group: group };
   },
+  async update(ctx) {
+    const user = ctx.state.user;
+    const { groupID } = ctx.params;
+
+    const {
+      data: { groupData },
+    } = ctx.request.body as CreateBody;
+
+    if (user.role.type !== USER_ROLES.TRAINER) {
+      return ctx.badRequest("Rol de usuario no autorizado");
+    }
+
+    const group = await strapi.query("api::group.group").update({
+      where: { id: groupID },
+      data: {
+        ...groupData,
+      },
+      populate: {
+        class: true,
+        schedules: true,
+        users: {
+          select: [
+            "id",
+            "firstName",
+            "lastName",
+            "documentID",
+            "dateOfBirth",
+            "username",
+            "email",
+            "provider",
+            "createdAt",
+            "updatedAt",
+          ],
+          populate: {
+            role: true,
+            photo: {
+              select: ["id", "name", "url", "createdAt", "updatedAt"],
+            },
+          },
+        },
+      },
+    });
+
+    return { group: group };
+  },
   async getAttendances(ctx) {
     const user = ctx.state.user;
     const { groupID, date } = ctx.params;

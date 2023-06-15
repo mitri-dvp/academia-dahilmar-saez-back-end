@@ -11,6 +11,11 @@ module.exports = {
       handler: "group.create",
     },
     {
+      method: "PUT",
+      path: "/groups/:groupID",
+      handler: "group.update",
+    },
+    {
       method: "GET",
       path: "/group/:groupID/attendances/:date",
       handler: "group.getAttendances",
