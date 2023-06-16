@@ -44,4 +44,49 @@ module.exports = {
       events: events,
     });
   },
+  async update(ctx) {
+    const user = ctx.state.user;
+    const { eventID } = ctx.params;
+
+    const {
+      data: { event },
+    } = ctx.request.body as CreateBody;
+
+    if (user.role.type !== USER_ROLES.TRAINER) {
+      return ctx.badRequest("Rol de usuario no autorizado");
+    }
+
+    await strapi.query("api::event.event").update({
+      where: { id: eventID },
+      data: {
+        name: event.name,
+        description: event.description,
+        datetime: event.datetime,
+      },
+    });
+
+    const events = await strapi.query("api::event.event").findMany();
+
+    return ctx.send({
+      events: events,
+    });
+  },
+  async deleteEvent(ctx) {
+    const user = ctx.state.user;
+    const { eventID } = ctx.params;
+
+    if (user.role.type !== USER_ROLES.TRAINER) {
+      return ctx.badRequest("Rol de usuario no autorizado");
+    }
+
+    await strapi.query("api::event.event").delete({
+      where: { id: eventID },
+    });
+
+    const events = await strapi.query("api::event.event").findMany();
+
+    return ctx.send({
+      events: events,
+    });
+  },
 };

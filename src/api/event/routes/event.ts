@@ -10,5 +10,15 @@ module.exports = {
       path: "/events",
       handler: "event.create",
     },
+    {
+      method: "PUT",
+      path: "/events/:eventID",
+      handler: "event.update",
+    },
+    {
+      method: "DELETE",
+      path: "/events/:eventID",
+      handler: "event.deleteEvent",
+    },
   ],
 };
