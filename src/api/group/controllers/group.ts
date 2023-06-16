@@ -183,6 +183,68 @@ module.exports = {
 
     return { group: group };
   },
+  async deleteGroup(ctx) {
+    const user = ctx.state.user;
+    const { groupID } = ctx.params;
+
+    if (user.role.type !== USER_ROLES.TRAINER) {
+      return ctx.badRequest("Rol de usuario no autorizado");
+    }
+
+    await strapi.query("api::group.group").delete({
+      where: { id: groupID },
+      populate: {
+        group: {
+          select: ["id"],
+        },
+      },
+    });
+
+    const userVerify = await strapi
+      .query("plugin::users-permissions.user")
+      .findOne({
+        where: {
+          email: user.email,
+        },
+        populate: {
+          groups: {
+            populate: {
+              class: true,
+              schedules: true,
+              users: {
+                select: [
+                  "id",
+                  "firstName",
+                  "lastName",
+                  "documentID",
+                  "dateOfBirth",
+                  "username",
+                  "email",
+                  "provider",
+                  "createdAt",
+                  "updatedAt",
+                ],
+                populate: {
+                  role: true,
+                  photo: {
+                    select: ["id", "name", "url", "createdAt", "updatedAt"],
+                  },
+                },
+              },
+            },
+          },
+        },
+        select: ["id"],
+      });
+
+    if (!userVerify) {
+      return ctx.badRequest("Usuario no encontrado");
+    }
+
+    return ctx.send({
+      groups: userVerify.groups,
+    });
+  },
   async getAttendances(ctx) {
     const user = ctx.state.user;
     const { groupID, date } = ctx.params;

@@ -16,6 +16,11 @@ module.exports = {
       handler: "group.update",
     },
     {
+      method: "DELETE",
+      path: "/groups/:groupID",
+      handler: "group.deleteGroup",
+    },
+    {
       method: "GET",
       path: "/group/:groupID/attendances/:date",
       handler: "group.getAttendances",
