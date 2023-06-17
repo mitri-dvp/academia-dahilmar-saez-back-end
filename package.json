@@ -10,6 +10,8 @@
     "strapi": "strapi"
   },
   "dependencies": {
+    "@react-email/components": "^0.0.7",
+    "@react-email/render": "^0.0.7",
     "@strapi/plugin-i18n": "4.10.7",
     "@strapi/plugin-users-permissions": "4.10.7",
     "@strapi/provider-email-nodemailer": "4.10.7",
