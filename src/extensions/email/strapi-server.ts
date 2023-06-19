@@ -29,6 +29,8 @@ async function sendContactEmail(ctx) {
     return ctx.badRequest("Missing data");
   }
 
+  return ctx.send("EMAIL :: SUCCESS :: FAKE");
+
   try {
     await strapi
       .plugin("email")

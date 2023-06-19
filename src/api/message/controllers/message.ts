@@ -9,9 +9,7 @@ module.exports = {
         email: email,
       },
       populate: {
-        messages: {
-          populate: {},
-        },
+        messages: true,
       },
       select: ["id"],
     });

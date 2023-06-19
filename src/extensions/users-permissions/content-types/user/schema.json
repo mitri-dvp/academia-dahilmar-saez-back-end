@@ -5,11 +5,11 @@
     "name": "user",
     "singularName": "user",
     "pluralName": "users",
-    "displayName": "User"
+    "displayName": "User",
+    "description": ""
   },
   "options": {
-    "draftAndPublish": false,
-    "timestamps": true
+    "draftAndPublish": false
   },
   "attributes": {
     "username": {
@@ -112,6 +112,18 @@
       "relation": "manyToMany",
       "target": "api::chat.chat",
       "mappedBy": "users"
+    },
+    "notificationsSent": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::notification.notification",
+      "mappedBy": "actor"
+    },
+    "notificationsRecieved": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::notification.notification",
+      "mappedBy": "notifier"
     }
   }
 }

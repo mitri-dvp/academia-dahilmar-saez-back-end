@@ -7,9 +7,11 @@ export default ({ env }) => ({
       database: env("DATABASE_NAME", "academia_dahilmar_saez"),
       user: env("DATABASE_USERNAME", "root"),
       password: env("DATABASE_PASSWORD", ""),
-      ssl: {
-        rejectUnauthorized: false,
-      },
+      ssl: env.bool("DATABASE_SSL", false)
+        ? {
+            rejectUnauthorized: env.bool("DATABASE_SSL", false),
+          }
+        : false,
       charset: env("DATABASE_CHARSET", "utf8mb4"),
     },
   },

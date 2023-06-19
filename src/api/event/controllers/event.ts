@@ -30,12 +30,24 @@ module.exports = {
       return ctx.badRequest("Rol de usuario no autorizado");
     }
 
-    await strapi.query("api::event.event").create({
+    const newEvent = await strapi.query("api::event.event").create({
       data: {
         name: event.name,
         description: event.description,
         datetime: event.datetime,
       },
+      select: ["id"],
+    });
+
+    // Notify
+    strapi.service("api::notification.notification").notify({
+      read: false,
+      actor: user.id,
+      notifiers: USER_ROLES.ATHLETE,
+      message: `Nuevo evento "${event.name}"`,
+      entity: "api::event.event",
+      entityID: newEvent.id,
+      action: "create",
     });
 
     const events = await strapi.query("api::event.event").findMany();
