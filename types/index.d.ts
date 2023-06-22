@@ -6,6 +6,7 @@ type User = {
   dateOfBirth: string;
   username: string;
   email: string;
+  phone: string;
   provider: string;
   createdAt: string;
   updatedAt: string;

@@ -25,11 +25,11 @@ async function sendContactEmail(ctx) {
   const body = ctx.request.body as EmailBody;
   const data = body.data as ContactData;
 
-  if (!data.name || !data.email || !data.message) {
+  if (!data.name || !data.email || !data.phone || !data.message) {
     return ctx.badRequest("Missing data");
   }
 
-  return ctx.send("EMAIL :: SUCCESS :: FAKE");
+  // return ctx.send("EMAIL :: SUCCESS :: FAKE");
 
   try {
     await strapi
@@ -40,7 +40,7 @@ async function sendContactEmail(ctx) {
         from: "Academia Dahilmar Sáez <mitri.dvp@gmail.com>",
         replyTo: null,
         subject: `Mensaje de ${data.name}`,
-        text: `${data.name}, ${data.email}, ${data.message}.`,
+        text: `${data.name}, ${data.email}, ${data.phone}, ${data.message}.`,
         html: render(ContactEmail(data)),
       });
   } catch (e) {

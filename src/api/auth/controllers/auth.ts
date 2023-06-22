@@ -7,6 +7,7 @@ type SingupBody = {
     documentID: number;
     dateOfBirth: string;
     email: string;
+    phone: string;
     password: string;
     role: string;
   };
@@ -42,6 +43,7 @@ module.exports = {
         data: {
           username: data.email,
           email: data.email,
+          phone: data.phone,
           password: data.password,
           confirmed: true,
           role: roleID,
@@ -69,6 +71,7 @@ module.exports = {
         id: user.id,
         username: user.username,
         email: user.email,
+        phone: user.phone,
         firstName: user.firstName,
         lastName: user.lastName,
         documentID: user.documentID,
@@ -136,6 +139,7 @@ module.exports = {
         id: user.id,
         username: user.username,
         email: user.email,
+        phone: user.phone,
         firstName: user.firstName,
         lastName: user.lastName,
         documentID: user.documentID,

@@ -86,6 +86,7 @@ module.exports = {
         data: {
           username: lowerCaseFirstName,
           email: lowerCaseFirstName + "@seed.com",
+          phone: "+584246206841",
           password: "password",
           confirmed: true,
           role: roleID,

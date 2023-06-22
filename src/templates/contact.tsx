@@ -50,6 +50,12 @@ export function ContactEmail(data: ContactData) {
               </Link>
             </Text>
 
+            <Text style={styles.paragraph}>
+              <Link href={`tel:${data.phone}`} style={styles.link}>
+                {data.phone}
+              </Link>
+            </Text>
+
             <Text style={styles.message}>{data.message}</Text>
           </Section>
 

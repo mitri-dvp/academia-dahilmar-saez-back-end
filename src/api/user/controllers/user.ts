@@ -8,6 +8,7 @@ type EditBody = {
     documentID: string;
     dateOfBirth: string;
     email: string;
+    phone: string;
   };
 };
 
@@ -39,6 +40,7 @@ module.exports = {
       .edit(id, {
         username: data.email,
         email: data.email,
+        phone: data.phone,
         firstName: data.firstName,
         lastName: data.lastName,
         documentID: data.documentID,
@@ -50,6 +52,7 @@ module.exports = {
         id: user.id,
         username: userEdit.userEditname,
         email: userEdit.email,
+        phone: userEdit.phone,
         firstName: userEdit.firstName,
         lastName: userEdit.lastName,
         documentID: userEdit.documentID,
@@ -189,6 +192,7 @@ module.exports = {
           "dateOfBirth",
           "username",
           "email",
+          "phone",
           "provider",
           "createdAt",
           "updatedAt",
