@@ -16,6 +16,8 @@ import {
   Text,
 } from "@react-email/components";
 
+import { parsePhoneNumber } from "libphonenumber-js";
+
 export function ContactEmail(data: ContactData) {
   return (
     <Html>
@@ -51,7 +53,10 @@ export function ContactEmail(data: ContactData) {
             </Text>
 
             <Text style={styles.paragraph}>
-              <Link href={`tel:${data.phone}`} style={styles.link}>
+              <Link
+                href={parsePhoneNumber(data.phone, "VE").getURI()}
+                style={styles.link}
+              >
                 {data.phone}
               </Link>
             </Text>
