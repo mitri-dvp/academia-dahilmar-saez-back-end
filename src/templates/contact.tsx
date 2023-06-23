@@ -47,12 +47,14 @@ export function ContactEmail(data: ContactData) {
             <Heading style={styles.heading}>Mensaje de {data.name}</Heading>
 
             <Text style={styles.paragraph}>
+              <Text style={styles.label}>Email</Text>
               <Link href={`mailto:${data.email}`} style={styles.link}>
                 {data.email}
               </Link>
             </Text>
 
             <Text style={styles.paragraph}>
+              <Text style={styles.label}>Teléfono</Text>
               <Link
                 href={parsePhoneNumber(data.phone, "VE").getURI()}
                 style={styles.link}
@@ -106,6 +108,12 @@ const styles = {
     color: "#484848",
     paddingTop: "32px",
   },
+  label: {
+    fontSize: "16px",
+    fontWeight: "400",
+    color: "#484848",
+    lineHeight: "1.4",
+  },
   paragraph: {
     marginBottom: "32px",
     fontSize: "16px",
@@ -113,6 +121,7 @@ const styles = {
     color: "#484848",
   },
   message: {
+    marginTop: "32px",
     marginBottom: "32px",
     fontSize: "16px",
     lineHeight: "1.4",
@@ -122,6 +131,7 @@ const styles = {
     borderRadius: "4px",
   },
   link: {
+    fontSize: "16px",
     color: "#f15a25",
     textDecoration: "none",
   },
