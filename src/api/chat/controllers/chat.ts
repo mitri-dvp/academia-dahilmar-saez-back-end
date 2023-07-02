@@ -43,6 +43,7 @@ module.exports = {
                   select: ["id", "name", "url", "createdAt", "updatedAt"],
                 },
               },
+              orderBy: [{ lastName: "ASC" }],
             },
             messages: {
               populate: {
@@ -118,6 +119,7 @@ module.exports = {
               select: ["id", "name", "url", "createdAt", "updatedAt"],
             },
           },
+          orderBy: [{ lastName: "ASC" }],
         },
       },
     });

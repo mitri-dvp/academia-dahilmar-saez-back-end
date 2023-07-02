@@ -58,6 +58,7 @@ module.exports = {
                   select: ["id", "name", "url", "createdAt", "updatedAt"],
                 },
               },
+              orderBy: [{ lastName: "ASC" }],
             },
           },
         },
@@ -134,6 +135,7 @@ module.exports = {
               select: ["id", "name", "url", "createdAt", "updatedAt"],
             },
           },
+          orderBy: [{ lastName: "ASC" }],
         },
       },
     });
@@ -180,6 +182,7 @@ module.exports = {
               select: ["id", "name", "url", "createdAt", "updatedAt"],
             },
           },
+          orderBy: [{ lastName: "ASC" }],
         },
       },
     });
@@ -234,6 +237,7 @@ module.exports = {
                     select: ["id", "name", "url", "createdAt", "updatedAt"],
                   },
                 },
+                orderBy: [{ lastName: "ASC" }],
               },
             },
           },
@@ -257,36 +261,28 @@ module.exports = {
       return ctx.badRequest("Rol de usuario no autorizado");
     }
 
-    const group = await strapi.query("api::group.group").findOne({
-      where: {
-        id: groupID,
-        attendances: {
+    const attendances = await strapi
+      .query("api::attendance.attendance")
+      .findMany({
+        where: {
           $and: [
-            { datetime: { $lt: dayjs(date).endOf("day").toDate() } },
-            { datetime: { $gt: dayjs(date).startOf("day").toDate() } },
+            { datetime: { $lte: dayjs(date).endOf("day").toDate() } },
+            { datetime: { $gte: dayjs(date).startOf("day").toDate() } },
           ],
-        },
-      },
-      populate: {
-        attendances: {
-          populate: {
-            user: {
-              select: ["id"],
-            },
+          group: {
+            id: groupID,
           },
         },
-      },
-      select: ["id"],
-    });
-
-    if (group) {
-      return ctx.send({
-        attendances: group.attendances,
+        populate: {
+          user: {
+            select: ["id", "firstName", "lastName"],
+            orderBy: [{ lastName: "ASC" }],
+          },
+        },
       });
-    }
 
     return ctx.send({
-      attendances: [],
+      attendances: attendances,
     });
   },
   async postAttendances(ctx) {
@@ -332,8 +328,8 @@ module.exports = {
         id: groupID,
         attendances: {
           $and: [
-            { datetime: { $lt: dayjs(date).endOf("day").toDate() } },
-            { datetime: { $gt: dayjs(date).startOf("day").toDate() } },
+            { datetime: { $lte: dayjs(date).endOf("day").toDate() } },
+            { datetime: { $gte: dayjs(date).startOf("day").toDate() } },
           ],
         },
       },
@@ -357,6 +353,44 @@ module.exports = {
 
     return ctx.send({
       attendances: [],
+    });
+  },
+  async exportAttendances(ctx) {
+    const user = ctx.state.user;
+    const { groupID } = ctx.params;
+    const { date, range } = ctx.query;
+
+    const startDate = dayjs(date).startOf(range);
+    const endDate = dayjs(date).endOf(range);
+
+    if (user.role.type !== USER_ROLES.TRAINER) {
+      return ctx.badRequest("Rol de usuario no autorizado");
+    }
+
+    const attendances = await strapi
+      .query("api::attendance.attendance")
+      .findMany({
+        where: {
+          $and: [
+            { datetime: { $lte: endDate.toDate() } },
+            { datetime: { $gte: startDate.toDate() } },
+          ],
+          group: {
+            id: groupID,
+          },
+        },
+        populate: {
+          user: {
+            select: ["id", "firstName", "lastName"],
+            orderBy: [{ lastName: "ASC" }],
+          },
+        },
+      });
+
+    return ctx.send({
+      attendances: attendances.sort(
+        (a, b) => dayjs(a.datetime).unix() - dayjs(b.datetime).unix()
+      ),
     });
   },
 };

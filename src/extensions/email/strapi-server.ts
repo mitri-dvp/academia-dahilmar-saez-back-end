@@ -43,8 +43,8 @@ async function sendContactEmail(ctx) {
         text: `${data.name}, ${data.email}, ${data.phone}, ${data.message}.`,
         html: render(ContactEmail(data)),
       });
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log(error);
     return ctx.internalServerError("EMAIL :: ERROR");
   }
 

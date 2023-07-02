@@ -30,5 +30,10 @@ module.exports = {
       path: "/group/:groupID/attendances/:date",
       handler: "group.postAttendances",
     },
+    {
+      method: "GET",
+      path: "/group/:groupID/export/attendances/",
+      handler: "group.exportAttendances",
+    },
   ],
 };

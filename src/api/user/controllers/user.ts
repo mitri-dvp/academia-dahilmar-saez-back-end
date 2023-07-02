@@ -203,6 +203,7 @@ module.exports = {
             select: ["id", "name", "url", "createdAt", "updatedAt"],
           },
         },
+        orderBy: [{ lastName: "ASC" }],
       });
 
     return ctx.send({ athletes: athletes });
