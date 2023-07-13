@@ -7,12 +7,22 @@ export default ({ env }) => ({
       database: env("DATABASE_NAME", "academia_dahilmar_saez"),
       user: env("DATABASE_USERNAME", "root"),
       password: env("DATABASE_PASSWORD", ""),
+      charset: env("DATABASE_CHARSET", "utf8mb4"),
       ssl: env.bool("DATABASE_SSL", false)
         ? {
-            rejectUnauthorized: env.bool("DATABASE_SSL", false),
+            rejectUnauthorized: false,
           }
         : false,
-      charset: env("DATABASE_CHARSET", "utf8mb4"),
+      acquireConnectionTimeout: 5000,
+      pool: {
+        min: 0,
+        max: 10,
+        createTimeoutMillis: 8000,
+        acquireTimeoutMillis: 8000,
+        idleTimeoutMillis: 8000,
+        reapIntervalMillis: 1000,
+        createRetryIntervalMillis: 100,
+      },
     },
   },
 });
