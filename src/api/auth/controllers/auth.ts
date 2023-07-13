@@ -1,4 +1,5 @@
 import { transformResponse } from "@strapi/strapi/lib/core-api/controller/transform";
+import { USER_ROLES } from "../../../utils/global";
 
 type SingupBody = {
   data: {
@@ -45,7 +46,7 @@ module.exports = {
           email: data.email,
           phone: data.phone,
           password: data.password,
-          confirmed: true,
+          confirmed: !(data.role === USER_ROLES.TRAINER),
           role: roleID,
           firstName: data.firstName,
           lastName: data.lastName,
@@ -65,6 +66,17 @@ module.exports = {
       .service("plugin::users-permissions.jwt")
       .issue({ id: user.id });
 
+    if (data.role === USER_ROLES.TRAINER) {
+      ctx.request.body = {
+        ...ctx.request.body,
+        template: "trainerPending",
+        data: {
+          ...user,
+        },
+      };
+      strapi.plugin("email").controller("email").send(ctx);
+    }
+
     return ctx.send({
       token: jwt,
       user: {
@@ -72,6 +84,7 @@ module.exports = {
         username: user.username,
         email: user.email,
         phone: user.phone,
+        confirmed: user.confirmed,
         firstName: user.firstName,
         lastName: user.lastName,
         documentID: user.documentID,
@@ -140,6 +153,7 @@ module.exports = {
         username: user.username,
         email: user.email,
         phone: user.phone,
+        confirmed: user.confirmed,
         firstName: user.firstName,
         lastName: user.lastName,
         documentID: user.documentID,

@@ -20,5 +20,15 @@ module.exports = {
       path: "/users/athletes",
       handler: "user.getAthletes",
     },
+    {
+      method: "GET",
+      path: "/users/token",
+      handler: "user.getUserFromToken",
+    },
+    {
+      method: "GET",
+      path: "/users/confirm/token",
+      handler: "user.confirmUser",
+    },
   ],
 };

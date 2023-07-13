@@ -1,5 +1,6 @@
 import { transformResponse } from "@strapi/strapi/lib/core-api/controller/transform";
 import { USER_ROLES } from "../../../utils/global";
+import { decrypt } from "../../../utils/encryption";
 
 type EditBody = {
   data: {
@@ -207,5 +208,108 @@ module.exports = {
       });
 
     return ctx.send({ athletes: athletes });
+  },
+  async getUserFromToken(ctx) {
+    const { token } = ctx.query;
+
+    const data = decrypt(token);
+
+    const parts = data.split("::");
+
+    const id = parts.shift();
+    const email = parts.shift();
+
+    const user = await strapi.query("plugin::users-permissions.user").findOne({
+      where: {
+        id: id,
+        email: email,
+      },
+      select: [
+        "id",
+        "firstName",
+        "lastName",
+        "documentID",
+        "dateOfBirth",
+        "username",
+        "email",
+        "phone",
+        "provider",
+        "createdAt",
+        "updatedAt",
+      ],
+      populate: {
+        role: true,
+        photo: {
+          select: ["id", "name", "url", "createdAt", "updatedAt"],
+        },
+      },
+    });
+
+    if (!user) {
+      return ctx.badRequest("Usuario no encontrado");
+    }
+
+    return ctx.send({ user: user });
+  },
+  async confirmUser(ctx) {
+    const { token } = ctx.query;
+
+    const data = decrypt(token);
+
+    const parts = data.split("::");
+
+    const id = parts.shift();
+    const email = parts.shift();
+
+    const user = await strapi.query("plugin::users-permissions.user").findOne({
+      where: {
+        id: id,
+        email: email,
+      },
+      select: [
+        "id",
+        "firstName",
+        "lastName",
+        "documentID",
+        "dateOfBirth",
+        "username",
+        "email",
+        "phone",
+        "provider",
+        "createdAt",
+        "updatedAt",
+      ],
+      populate: {
+        role: true,
+        photo: {
+          select: ["id", "name", "url", "createdAt", "updatedAt"],
+        },
+      },
+    });
+
+    if (!user) {
+      return ctx.badRequest("Usuario no encontrado");
+    }
+
+    await strapi.service("plugin::users-permissions.user").edit(id, {
+      confirmed: true,
+    });
+
+    ctx.request.body = {
+      ...ctx.request.body,
+      template: "trainerConfirmation",
+      data: {
+        ...user,
+      },
+    };
+
+    strapi.plugin("email").controller("email").send(ctx);
+
+    return ctx.send({
+      user: {
+        ...user,
+        confirmed: true,
+      },
+    });
   },
 };
