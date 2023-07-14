@@ -119,8 +119,8 @@ async function sendWelcomeAthleteEmail(ctx) {
         to: ["mitri.dvp@gmail.com", data.email],
         from: "Academia Dahilmar Sáez <mitri.dvp@gmail.com>",
         replyTo: null,
-        subject: `Cuenta Entrenador Aprobada para ${data.firstName} ${data.lastName}`,
-        text: `${data.firstName} ${data.lastName} su cuenta de Entrenador ha sido Aprobada`,
+        subject: `Bienvenido a la Academia Dahilmar Sáez ${data.firstName} ${data.lastName}`,
+        text: `${data.firstName} ${data.lastName} su cuenta de Atleta ha sido Creada`,
         html: render(WelcomeAthleteEmail(data)),
       });
   } catch (error) {

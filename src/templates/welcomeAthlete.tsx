@@ -22,9 +22,7 @@ export function WelcomeAthleteEmail(data: User) {
   return (
     <Html>
       <Head />
-      <Preview>
-        Bienvenido {data.firstName} {data.lastName}
-      </Preview>
+      <Preview>Cuenta de Atleta ha sido Creada</Preview>
       <Body style={styles.main}>
         <Container style={styles.container}>
           <Section style={styles.content}>
