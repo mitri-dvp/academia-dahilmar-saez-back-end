@@ -77,6 +77,17 @@ module.exports = {
       strapi.plugin("email").controller("email").send(ctx);
     }
 
+    if (data.role === USER_ROLES.ATHLETE) {
+      ctx.request.body = {
+        ...ctx.request.body,
+        template: "welcomeAthlete",
+        data: {
+          ...user,
+        },
+      };
+      strapi.plugin("email").controller("email").send(ctx);
+    }
+
     return ctx.send({
       token: jwt,
       user: {

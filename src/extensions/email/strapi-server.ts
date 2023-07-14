@@ -1,6 +1,7 @@
 import { ContactEmail } from "../../templates/contact";
 import { TrainerPendingEmail } from "../../templates/trainerPending";
 import { TrainerConfirmationEmail } from "../../templates/trainerConfirmation";
+import { WelcomeAthleteEmail } from "../../templates/welcomeAthlete";
 
 import { render } from "@react-email/render";
 
@@ -16,6 +17,8 @@ module.exports = (plugin) => {
           return await sendTrainerPendingEmail(ctx);
         case "trainerConfirmation":
           return await sendTrainerConfirmationEmail(ctx);
+        case "welcomeAthlete":
+          return await sendWelcomeAthleteEmail(ctx);
         default:
           return ctx.badRequest("Template not found");
       }
@@ -89,12 +92,36 @@ async function sendTrainerConfirmationEmail(ctx) {
       .plugin("email")
       .service("email")
       .send({
-        to: "mitri.dvp@gmail.com",
+        to: ["mitri.dvp@gmail.com", data.email],
         from: "Academia Dahilmar Sáez <mitri.dvp@gmail.com>",
         replyTo: null,
         subject: `Cuenta Entrenador Aprobada para ${data.firstName} ${data.lastName}`,
         text: `${data.firstName} ${data.lastName} su cuenta de Entrenador ha sido Aprobada`,
         html: render(TrainerConfirmationEmail(data)),
+      });
+  } catch (error) {
+    console.log(error);
+    return ctx.internalServerError("EMAIL :: ERROR");
+  }
+
+  return ctx.send("EMAIL :: SUCCESS");
+}
+
+async function sendWelcomeAthleteEmail(ctx) {
+  // Admin --> Athlete
+  const data = ctx.request.body.data as User;
+
+  try {
+    await strapi
+      .plugin("email")
+      .service("email")
+      .send({
+        to: ["mitri.dvp@gmail.com", data.email],
+        from: "Academia Dahilmar Sáez <mitri.dvp@gmail.com>",
+        replyTo: null,
+        subject: `Cuenta Entrenador Aprobada para ${data.firstName} ${data.lastName}`,
+        text: `${data.firstName} ${data.lastName} su cuenta de Entrenador ha sido Aprobada`,
+        html: render(WelcomeAthleteEmail(data)),
       });
   } catch (error) {
     console.log(error);
